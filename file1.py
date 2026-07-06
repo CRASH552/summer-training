@@ -17,7 +17,7 @@ chat = client.chats.create(
     )
 )
 
-print("Chat session started! Type 'exit' or 'quit' to stop.\n")
+print("Chat session started! Type 'quit' to stop.\n")
 
 # 2. Keep the conversation looping
 while True:
@@ -25,7 +25,7 @@ while True:
     c = input("Enter the prompt: ")
     
     # 4. Corrected the syntax for checking the exit command
-    if c.lower() in ['quit', 'exit']:
+    if c.lower() in ['quit']:
         print('bye')
         break
     
