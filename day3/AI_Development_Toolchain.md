@@ -7,4 +7,4 @@
 3-What is an IDE?
 (Integrated Development Environment) software application that combines all essintial devolpment tools
 
-![diagram](daigram.png)
+![diagram](a.drawio.png)
