@@ -1,92 +1,88 @@
 import { Store } from '../store.js';
-import { el } from '../utils.js';
 import { Router } from '../router.js';
+import { el } from '../utils.js';
 
 export function AddCheckinView(params) {
   const shipmentId = params.get('id');
   const shipment = Store.getShipmentById(shipmentId);
-  
-  const container = el('div', 'animate-fade-in flex justify-center');
+  const container = el('div', 'animate-fade-in');
   
   if (!shipment) {
     container.appendChild(el('h2', '', 'Shipment not found.'));
     return container;
   }
   
-  const card = el('div', 'card');
-  card.style.width = '100%';
-  card.style.maxWidth = '600px';
+  const header = el('div', 'mb-8');
+  header.appendChild(el('h1', 'mb-2', 'Add Check-In'));
+  header.appendChild(el('p', 'text-muted', `Update status for: ${shipment.title}`));
   
-  const titleRow = el('div', 'flex items-center gap-4 mb-8');
-  const backBtn = el('button', 'btn btn-secondary', '<i class="ph ph-arrow-left"></i>');
-  backBtn.style.padding = '0.5rem';
-  backBtn.onclick = () => window.history.back();
-  titleRow.appendChild(backBtn);
-  titleRow.appendChild(el('h2', 'mb-0', 'Add Check-in'));
-  card.appendChild(titleRow);
+  const form = el('form', 'card flex flex-col gap-4');
   
-  card.appendChild(el('p', 'mb-8', `Recording condition for: <strong>${shipment.title}</strong>`));
+  // Form fields logic...
+  const locationGroup = el('div', 'form-group');
+  locationGroup.innerHTML = '<label>Current Location</label>';
+  const locationInput = el('input', 'form-input');
+  locationInput.required = true;
+  locationGroup.appendChild(locationInput);
   
-  // Form elements
-  const locationGrp = el('div', 'form-group');
-  locationGrp.innerHTML = `<label class="form-label">Current Location / Checkpoint</label>
-                           <input type="text" id="chkLocation" class="form-input" placeholder="e.g. Warehouse B" required>`;
-                           
-  const statusGrp = el('div', 'form-group');
-  statusGrp.innerHTML = `<label class="form-label">Condition Status</label>
-                         <select id="chkStatus" class="form-select">
-                           <option value="OK">OK - Intact</option>
-                           <option value="Issue Found">Issue Found - Damaged/Missing</option>
-                         </select>`;
-                         
-  const noteGrp = el('div', 'form-group');
-  noteGrp.innerHTML = `<label class="form-label">Inspection Notes</label>
-                       <textarea id="chkNote" class="form-textarea" placeholder="Describe the condition..."></textarea>`;
-                       
-  const photoGrp = el('div', 'form-group mb-8');
-  photoGrp.innerHTML = `<label class="form-label">Attach Photo Evidence</label>
-                        <input type="file" id="chkPhoto" class="form-input" accept="image/*">
-                        <small style="color: var(--text-secondary)">Simulation: photo will be saved as a mock filename.</small>`;
-
-  const finalGrp = el('div', 'form-group mb-8 flex items-center gap-2');
-  finalGrp.innerHTML = `<input type="checkbox" id="chkFinal" style="width: 18px; height: 18px;">
-                        <label for="chkFinal" style="margin:0; font-weight: 500">Mark as Final Delivery (Completes Shipment)</label>`;
-
+  const statusGroup = el('div', 'form-group');
+  statusGroup.innerHTML = '<label>Status</label>';
+  const statusSelect = el('select', 'form-input');
+  statusSelect.innerHTML = `
+    <option value="OK">OK - Operating Normally</option>
+    <option value="Issue">Issue - Problem Encountered</option>
+  `;
+  statusGroup.appendChild(statusSelect);
+  
+  const noteGroup = el('div', 'form-group');
+  noteGroup.innerHTML = '<label>Note (Optional)</label>';
+  const noteInput = el('textarea', 'form-input');
+  noteGroup.appendChild(noteInput);
+  
+  const photoGroup = el('div', 'form-group');
+  photoGroup.innerHTML = '<label>Photo Capture (Optional)</label>';
+  const photoInput = el('input', 'form-input');
+  photoInput.type = 'file';
+  photoInput.accept = 'image/*';
+  photoGroup.appendChild(photoInput);
+  
   const submitBtn = el('button', 'btn btn-primary', 'Save Check-in');
-  submitBtn.style.width = '100%';
+  submitBtn.type = 'submit';
   
-  submitBtn.onclick = () => {
-    const locEl = document.getElementById('chkLocation');
-    const statusEl = document.getElementById('chkStatus');
-    const noteEl = document.getElementById('chkNote');
-    const photoEl = document.getElementById('chkPhoto');
-    const finalEl = document.getElementById('chkFinal');
+  form.appendChild(locationGroup);
+  form.appendChild(statusGroup);
+  form.appendChild(noteGroup);
+  form.appendChild(photoGroup);
+  form.appendChild(submitBtn);
+  
+  form.onsubmit = (e) => {
+    e.preventDefault();
     
-    if (!locEl.value.trim()) {
-      alert('Location is required.');
-      return;
+    const saveCheckin = (photoBase64 = null) => {
+      const checkinData = {
+        location: locationInput.value,
+        status: statusSelect.value,
+        note: noteInput.value,
+        photo: photoBase64
+      };
+      
+      Store.addCheckin(shipmentId, checkinData);
+      Router.navigate(`shipment?id=${shipmentId}`);
+    };
+    
+    const file = photoInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        saveCheckin(reader.result); // Base64 encoding complete
+      };
+      reader.readAsDataURL(file);
+    } else {
+      saveCheckin(null);
     }
-    
-    const photoName = photoEl.files.length > 0 ? photoEl.files[0].name : null;
-    
-    Store.addCheckin(shipmentId, {
-      location: locEl.value.trim(),
-      status: statusEl.value,
-      note: noteEl.value.trim(),
-      photo: photoName,
-      isFinal: finalEl.checked
-    });
-    
-    Router.navigate(`shipment?id=${shipmentId}`);
   };
   
-  card.appendChild(locationGrp);
-  card.appendChild(statusGrp);
-  card.appendChild(noteGrp);
-  card.appendChild(photoGrp);
-  card.appendChild(finalGrp);
-  card.appendChild(submitBtn);
-  
-  container.appendChild(card);
+  container.appendChild(header);
+  container.appendChild(form);
   return container;
 }

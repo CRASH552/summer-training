@@ -1,7 +1,6 @@
 import { Store } from '../store.js';
 import { Auth } from '../auth.js';
 import { el, formatDate } from '../utils.js';
-import { Router } from '../router.js';
 
 export function ShipmentView(params) {
   const shipmentId = params.get('id');
@@ -39,7 +38,7 @@ export function ShipmentView(params) {
   const timelineCard = el('div', 'card');
   timelineCard.appendChild(el('h3', 'mb-4', '<i class="ph ph-clock-counter-clockwise"></i> Shipment Timeline'));
   
-  if (shipment.timeline.length === 0) {
+  if (!shipment.timeline || shipment.timeline.length === 0) {
     timelineCard.appendChild(el('p', '', 'No check-ins recorded yet.'));
   } else {
     const timelineEl = el('div', 'timeline');
@@ -61,13 +60,19 @@ export function ShipmentView(params) {
       }
       
       if (checkin.photo) {
-        // Mock photo display
-        const photoBox = el('div', 'mb-2 flex items-center justify-center');
-        photoBox.style.background = 'rgba(0,0,0,0.2)';
+        const photoBox = el('div', 'mb-2 flex flex-col items-center justify-center');
         photoBox.style.borderRadius = '8px';
-        photoBox.style.height = '100px';
-        photoBox.style.border = '1px dashed var(--border-color)';
-        photoBox.innerHTML = `<span style="color: var(--text-secondary); font-size: 0.8rem"><i class="ph ph-image"></i> Attached: ${checkin.photo}</span>`;
+        photoBox.style.overflow = 'hidden';
+        photoBox.style.border = '1px solid var(--border-color)';
+        
+        // If it's a base64 string, render the image. Otherwise, fall back to file name string
+        if (checkin.photo.startsWith('data:image')) {
+          photoBox.innerHTML = `<img src="${checkin.photo}" alt="Check-in Photo" style="max-width: 100%; max-height: 200px; object-fit: contain;" />`;
+        } else {
+          photoBox.style.background = 'rgba(0,0,0,0.2)';
+          photoBox.style.height = '100px';
+          photoBox.innerHTML = `<span style="color: var(--text-secondary); font-size: 0.8rem"><i class="ph ph-image"></i> Attached: ${checkin.photo}</span>`;
+        }
         content.appendChild(photoBox);
       }
       
@@ -79,7 +84,7 @@ export function ShipmentView(params) {
   
   leftCol.appendChild(timelineCard);
   
-  // Right: Chat Panel
+  // Right: Chat Panel with Tab Filters
   const rightCol = el('div', 'flex-col gap-4');
   rightCol.style.flex = '1';
   rightCol.style.minWidth = '300px';
@@ -87,15 +92,59 @@ export function ShipmentView(params) {
   const chatContainer = el('div', 'chat-container');
   chatContainer.appendChild(el('div', 'chat-header', '<i class="ph ph-chat-circle-dots"></i> Communication'));
   
+  // Create Dual-Channel Tab Nav (Only if user is Employee or Manager)
+  const isClient = currentUser.role === 'Customer';
+  let activeChannel = 'clientMessages'; // default channel
+  
+  if (!isClient) {
+    const tabContainer = el('div', 'flex mb-4 bg-secondary p-1', '', 'tab-container');
+    tabContainer.style.borderRadius = '8px';
+    tabContainer.style.background = 'var(--bg-secondary)';
+    
+    const clientTab = el('button', 'btn', 'Client Chat');
+    clientTab.style.flex = '1';
+    clientTab.style.backgroundColor = 'var(--primary)';
+    clientTab.style.color = 'white';
+    
+    const internalTab = el('button', 'btn', 'Internal Chat');
+    internalTab.style.flex = '1';
+    internalTab.style.backgroundColor = 'transparent';
+    internalTab.style.color = 'var(--text-secondary)';
+    
+    clientTab.onclick = () => {
+      activeChannel = 'clientMessages';
+      clientTab.style.backgroundColor = 'var(--primary)';
+      clientTab.style.color = 'white';
+      internalTab.style.backgroundColor = 'transparent';
+      internalTab.style.color = 'var(--text-secondary)';
+      renderMessages();
+    };
+    
+    internalTab.onclick = () => {
+      activeChannel = 'internalMessages';
+      internalTab.style.backgroundColor = 'var(--primary)';
+      internalTab.style.color = 'white';
+      clientTab.style.backgroundColor = 'transparent';
+      clientTab.style.color = 'var(--text-secondary)';
+      renderMessages();
+    };
+    
+    tabContainer.appendChild(clientTab);
+    tabContainer.appendChild(internalTab);
+    chatContainer.appendChild(tabContainer);
+  }
+  
   const chatMessages = el('div', 'chat-messages');
   chatMessages.id = 'chat-messages';
   
   const renderMessages = () => {
     chatMessages.innerHTML = '';
-    if (shipment.messages.length === 0) {
-      chatMessages.appendChild(el('p', 'text-center', 'No messages yet.'));
+    const messages = shipment[activeChannel] || [];
+    
+    if (messages.length === 0) {
+      chatMessages.appendChild(el('p', 'text-center text-muted mt-4', 'No messages yet in this channel.'));
     } else {
-      shipment.messages.forEach(m => {
+      messages.forEach(m => {
         const isSelf = m.senderId === currentUser.id;
         const msgEl = el('div', `chat-message ${isSelf ? 'self' : 'other'}`);
         const senderUser = Store.getUserById(m.senderId);
@@ -124,7 +173,7 @@ export function ShipmentView(params) {
   const handleSend = () => {
     const text = inputEl.value.trim();
     if (text) {
-      Store.addMessage(shipment.id, currentUser.id, text);
+      Store.addMessage(shipment.id, activeChannel, currentUser.id, text);
       inputEl.value = '';
       renderMessages();
     }
@@ -145,11 +194,14 @@ export function ShipmentView(params) {
   container.appendChild(header);
   container.appendChild(layout);
   
-  // Setup back button
+  // Setup back button redirect safely
   setTimeout(() => {
-    document.getElementById('backBtn').onclick = () => {
+    const btn = document.getElementById('backBtn');
+    if (btn) {
+      btn.onclick = () => {
         window.history.back();
-    };
+      };
+    }
   }, 0);
   
   return container;

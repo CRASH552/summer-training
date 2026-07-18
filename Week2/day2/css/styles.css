@@ -14,6 +14,35 @@
   --font-family: 'Outfit', sans-serif;
 }
 
+body.light-theme {
+  --bg-color: #f1f5f9;
+  --surface-color: #ffffff;
+  --surface-hover: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --border-color: #cbd5e1;
+}
+
+body.light-theme .card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+body.light-theme .form-input, 
+body.light-theme .form-select, 
+body.light-theme .form-textarea {
+  background-color: #ffffff;
+  color: var(--text-primary);
+}
+
+body.light-theme .nav-brand {
+  color: var(--text-primary);
+}
+
+body.light-theme .chat-input-area {
+  background: rgba(0, 0, 0, 0.02);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -267,7 +296,7 @@ p { color: var(--text-secondary); margin-bottom: 1rem; }
 }
 .chat-message.other {
   align-self: flex-start;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--surface-hover);
   border: 1px solid var(--border-color);
   border-bottom-left-radius: 4px;
 }
@@ -286,3 +315,21 @@ p { color: var(--text-secondary); margin-bottom: 1rem; }
 /* Animations */
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .animate-fade-in { animation: fadeIn 0.3s ease forwards; }
+
+.theme-toggle {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.theme-toggle:hover {
+  background-color: var(--surface-hover);
+}
