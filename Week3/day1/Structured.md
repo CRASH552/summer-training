@@ -29,4 +29,4 @@ def check_system():
     print("Initializing Delivery Checker...")
     print("Status: CLI Mode Active (No Database Connected)")
 
-check_system()
+check_system() 
