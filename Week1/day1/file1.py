@@ -32,4 +32,4 @@ while True:
     # 5. Use chat.send_message() to send the text and remember history
     response = chat.send_message(c)
     
-    print(response.text)
+    print(response.text) 
