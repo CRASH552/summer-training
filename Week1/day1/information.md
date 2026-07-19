@@ -33,4 +33,4 @@ The primary goal of this task was to integrate an AI-powered assistant directly 
 ## 4. Key Takeaways & Learning Outcomes
 - API Management: Gained practical experience in safely provisioning and handling private credentials.
 
-- Workflow Optimization: Learned how integrating AI tools directly into an IDE reduces context-switching and speeds up code writing.
+- Workflow Optimization: Learned how integrating AI tools directly into an IDE reduces context-switching and speeds up code writing. 
