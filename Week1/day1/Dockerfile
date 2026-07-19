@@ -10,7 +10,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application files
-COPY day1/file1.py .
+COPY file1.py .
 
 # Expose the port the app runs on
 EXPOSE 3000
