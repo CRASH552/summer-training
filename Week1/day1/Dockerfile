@@ -16,4 +16,4 @@ COPY file1.py .
 EXPOSE 3000
 
 # Define the command to run the application
-CMD ["python", "file1.py"]
+CMD ["python", "file1.py"] 
