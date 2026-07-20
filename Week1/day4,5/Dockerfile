@@ -19,4 +19,4 @@ EXPOSE 3000
 VOLUME [ "/data" ]
 
 # Define the command to run the application
-CMD ["python", "SummarizeTxt.py"]
+CMD ["python", "SummarizeTxt.py"] 
