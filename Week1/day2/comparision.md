@@ -102,4 +102,4 @@ Best regards,
 ## 4. With Clear Constraints Prompt (High Structural Utility)
 - Analysis: This approach is essential when the output must adhere to strict operational or structural boundaries.
 
-- Strengths: It forces the AI to comply with rigid guidelines—such as strict character or word counts and explicit omissions—ensuring the content fits defined technical or platform limitations.
+- Strengths: It forces the AI to comply with rigid guidelines—such as strict character or word counts and explicit omissions—ensuring the content fits defined technical or platform limitations. 

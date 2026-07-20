@@ -12,4 +12,4 @@ This project is a localized Python application that uses a Large Language Model 
 ## How It Is Built
 * **Python Engine:** Handles the core application logic, API communication, and the direct programmatic generation of the text and PDF files.
 * **Docker Integration:** The entire script environment is packaged inside a `Dockerfile` to guarantee it runs exactly the same way on any host machine.
-* **Docker Compose & Shared Volumes:** Configured to sync folders between the running container and your computer. This ensures that the generated PDFs and text files are saved safely onto your local hard drive.
+* **Docker Compose & Shared Volumes:** Configured to sync folders between the running container and your computer. This ensures that the generated PDFs and text files are saved safely onto your local hard drive. 
