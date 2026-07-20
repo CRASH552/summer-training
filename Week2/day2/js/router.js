@@ -6,7 +6,7 @@ import { CustomerDashboard } from './views/CustomerDashboard.js';
 import { ShipmentView } from './views/ShipmentView.js';
 import { AddCheckinView } from './views/AddCheckin.js';
 import { Auth } from './auth.js';
-import { renderNavbar } from './utils.js';
+import { renderNavbar } from './utils.js'; 
 
 export const Router = {
   routes: {

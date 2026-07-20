@@ -3,7 +3,7 @@
 
 ### Bug 1: Real-Time Chat Rendering Issue
 *   **The Bug:** In all account types (Manager, Employee, and Client), sending a chat message by pressing Enter did not update the chat screen. The message would only appear after manually refreshing the page.
-*   **The Fix:** Resolved the rendering bug by ensuring the chat interface updates dynamically. Now, when a Manager, Employee, or Client sends a message, it immediately renders in the chat bubble list without requiring a manual page refresh.
+*   **The Fix:** Resolved the rendering bug by ensuring the chat interface updates dynamically. Now, when a Manager, Employee, or Client sends a message, it immediately renders in the chat bubble list without requiring a manual page refresh. 
 
 ### Bug 2: Post-Finalization Check-In Loophole
 *   **The Bug:** After an Employee marked a shipment as "Final Delivery (Complete Shipment)", they could still press the back button in their browser to access the check-in screen and add more check-in entries.

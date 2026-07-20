@@ -10,7 +10,7 @@ export function el(tag, className = '', content = '') {
   } else if (Array.isArray(content)) {
     content.forEach(child => element.appendChild(child));
   }
-  return element;
+  return element; 
 }
 
 export function formatDate(isoString) {

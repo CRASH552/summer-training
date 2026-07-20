@@ -1,6 +1,6 @@
 import { Store } from '../store.js';
 import { Router } from '../router.js';
-import { el } from '../utils.js';
+import { el } from '../utils.js'; 
 
 export function AddCheckinView(params) {
   const shipmentId = params.get('id');

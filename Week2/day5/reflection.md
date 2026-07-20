@@ -4,7 +4,7 @@
 
 ---
 
-### 1. Where AI Helped
+### 1. Where AI Helped 
 * **Rapid Bug Resolution:** AI quickly diagnosed and fixed the real-time chat rendering issue, providing the correct logic to update the chat list instantly without a manual page refresh.
 * **Feature Implementation:** AI handled the technical setup of the HTML FileReader API, successfully converting uploaded check-in photos to Base64 strings and displaying them directly in the timeline.
 * **Writing Boilerplate & Guardrails:** AI easily generated the conditional logic needed to display warning messages and lock down the user interface once a shipment is marked complete.

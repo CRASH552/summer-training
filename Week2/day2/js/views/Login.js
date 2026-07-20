@@ -1,6 +1,6 @@
 import { Store } from '../store.js';
 import { Auth } from '../auth.js';
-import { Router } from '../router.js';
+import { Router } from '../router.js'; 
 import { el } from '../utils.js';
 
 export function LoginView() {

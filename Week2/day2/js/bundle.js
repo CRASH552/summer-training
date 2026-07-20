@@ -5,7 +5,7 @@ const INITIAL_USERS = [
   { id: 'u3', name: 'Jane Smith', role: 'employee', email: 'jane@delivery.com', password: 'password' },
   { id: 'u4', name: 'ACME Corp', role: 'customer', email: 'acme@corp.com', password: 'password' },
   { id: 'u5', name: 'TechFlow Inc', role: 'customer', email: 'techflow@inc.com', password: 'password' }
-];
+]; 
 
 const INITIAL_SHIPMENTS = [
   {

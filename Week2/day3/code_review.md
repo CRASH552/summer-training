@@ -6,7 +6,7 @@ Here is a line-by-line review of the AI-generated code from the project files (`
 **File:** `js/utils.js` (Lines 6-7)
 ```javascript
 if (typeof content === 'string') {
-  element.innerHTML = content;
+  element.innerHTML = content; 
 }
 ```
 **Issue:** The `el` utility function uses `.innerHTML` to insert string content. If any user-generated data (such as a shipment title, user name, or message text) is passed to this function as a string, it creates a Cross-Site Scripting (XSS) vulnerability. 

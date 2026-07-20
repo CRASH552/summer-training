@@ -1,5 +1,5 @@
 import { Store } from '../store.js';
-import { Auth } from '../auth.js';
+import { Auth } from '../auth.js'; 
 import { el, formatDate } from '../utils.js';
 
 export function ShipmentView(params) {

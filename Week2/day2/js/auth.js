@@ -8,7 +8,7 @@ export const Auth = {
       return true;
     }
     return false;
-  },
+  }, 
 
   logout() {
     localStorage.removeItem('dc_current_user');
