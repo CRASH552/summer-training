@@ -1,0 +1,93 @@
+{
+  "name": "Scheduled API Data Exchange Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "interval": 1
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        250,
+        300
+      ],
+      "id": "e93f8e56-1234-4abc-8def-1234567890ab"
+    },
+    {
+      "parameters": {
+        "url": "https://catfact.ninja/fact",
+        "options": {}
+      },
+      "name": "Fetch Cat Fact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        450,
+        300
+      ],
+      "id": "e93f8e56-1234-4abc-8def-1234567890bb"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://httpbin.org/get",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "animal",
+              "value": "cat"
+            },
+            {
+              "name": "fact",
+              "value": "={{ $json.fact }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Send Data to External API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        650,
+        300
+      ],
+      "id": "e93f8e56-1234-4abc-8def-1234567890cc"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Cat Fact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Cat Fact": {
+      "main": [
+        [
+          {
+            "node": "Send Data to External API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

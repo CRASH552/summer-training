@@ -1,0 +1,185 @@
+{
+  "name": "Error Handling & Human Approval Workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger-node",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://catfact.ninja/fact",
+        "options": {
+          "allowUnauthorizedCerts": false,
+          "continueOnFail": true
+        }
+      },
+      "id": "fetch-node",
+      "name": "Fetch Data (API 1)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "onError": "continueRegularOutput",
+      "position": [
+        400,
+        300
+      ],
+      "notesInFlow": true,
+      "notes": "continueOnFail is enabled here to catch errors!"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.error != undefined }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-error-node",
+      "name": "Check for Error",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        600,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "status",
+              "value": "Error successfully caught and handled!",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "error_message",
+              "value": "={{ $json.error }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "error-handled-node",
+      "name": "Handle Error Alert",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        800,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "webhookPath": "approve-data",
+        "options": {}
+      },
+      "id": "wait-node",
+      "name": "Human Approval (Wait)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        800,
+        450
+      ],
+      "notesInFlow": true,
+      "notes": "Execution pauses here until approved"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://postman-echo.com/get",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "animal",
+              "value": "cat"
+            },
+            {
+              "name": "fact",
+              "value": "={{ $('Fetch Data (API 1)').item.json.fact }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "send-node",
+      "name": "Send Data (API 2)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1000,
+        450
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Data (API 1)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Data (API 1)": {
+      "main": [
+        [
+          {
+            "node": "Check for Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for Error": {
+      "main": [
+        [
+          {
+            "node": "Handle Error Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Human Approval (Wait)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Human Approval (Wait)": {
+      "main": [
+        [
+          {
+            "node": "Send Data (API 2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

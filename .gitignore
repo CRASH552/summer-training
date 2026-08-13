@@ -221,3 +221,6 @@ __pycache__/
 *.pyc
 venv/
 .DS_Store
+
+# Local database files
+memory.json
